@@ -20,7 +20,7 @@ class CNN(nn.Module):
             self.conv_block(128, 196, 3, 1, 0, batch_norm=False, max_pool=True),
         )
         
-        fc_layers = [self.fc_block(196*25*25, 320, dropout=0.5)]
+        fc_layers = [self.fc_block(196*22*22, 320, dropout=0.5)]
         if include_top:
             fc_layers.append(nn.Linear(320, num_classes))
             fc_layers.append(nn.Softmax(dim=1))
