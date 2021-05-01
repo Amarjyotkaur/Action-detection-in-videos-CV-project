@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
 
-from finetuned_resnet import finetuned_resnet
-from temporal_cnn import temporal_CNN
+from .finetuned_resnet import finetuned_resnet
+from .temporal_cnn import temporal_CNN
 
 class two_stream_model(nn.Module):
     '''
