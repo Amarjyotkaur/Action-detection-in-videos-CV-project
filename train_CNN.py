@@ -10,8 +10,8 @@ from torch.pytorch_widedeep.callbacks import ModelCheckpoint
 from torch.pytorch_widedeep.callbacks import EarlyStopping
 from utils.UCF_preprocessing import regenerate_data
 
-def train(model, n_epoch, lr, input_shape, device, data_dir, model_dir, optical_flow):
-    N_CLASSES = 101
+def train(model, n_epoch, learningrate, input_shape, device, data_dir, model_dir, optical_flow):
+    N_CLASSES = 174
     BatchSize = 32
 
     if optical_flow:
@@ -22,7 +22,7 @@ def train(model, n_epoch, lr, input_shape, device, data_dir, model_dir, optical_
         testloader = image_from_sequence_generator(test_data, BatchSize, input_shape, N_CLASSES)
 
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(model.parameters(), lr=0.001, weight_decay=1e-6, momentum=0.9, nesterov=True)
+    optimizer = optim.SGD(model.parameters(), lr=learningrate, weight_decay=1e-6, momentum=0.9, nesterov=True)
 
     model.to(device)
     #start = time.time()
@@ -47,8 +47,6 @@ def train(model, n_epoch, lr, input_shape, device, data_dir, model_dir, optical_
 
             labels = labels[:,1]
             output = torch.flatten(output)
-            #print("output", output)
-            #print("label", labels)
             loss = criterion(output, labels)
             loss.backward()
             optimizer.step()
@@ -72,18 +70,24 @@ def train(model, n_epoch, lr, input_shape, device, data_dir, model_dir, optical_
                     )
                     
                     model.train() 
+                    """
         if (e % 10 == 0) or (e == epochs-1): 
-            save_checkpoint(model, optimizer, epochs, train_loss_ls, val_loss_ls, os.path.join(model_dir, 'epoch-{}.pt'.format(e)))
-    """
+            save_checkpoint(model, optimizer, e, os.path.join(model_dir, 'epoch-{}.pt'.format(e)))
+    
     list_dir = os.path.join(data_dir, 'ucfTrainTestlist')
     UCF_dir = os.path.join(data_dir, 'UCF-101')
     regenerate_data(data_dir, list_dir, UCF_dir)
     return model
 
+def save_checkpoint(model, optimizer, n_epoch, path):
+    checkpoint = {'state_dict': model.state_dict(),
+                  'opti_state_dict': optimizer.state_dict(),
+                  }
+    torch.save(checkpoint, path)
 
 
 if __name__ == '__main__':
-    data_dir = '/home/changan/ActionRecognition/data'
+    data_dir = '/D:\SUTD\Term-7\Deep Learning/ActionDetection_In_Videos/data'
     list_dir = os.path.join(data_dir, 'ucfTrainTestlist')
     weights_dir = '/home/changan/ActionRecognition/models'
     video_dir = os.path.join(data_dir, 'UCF-Preprocessed-OF')
@@ -93,7 +97,6 @@ if __name__ == '__main__':
     lr = 0.001
     input_shape = (10, 216, 216, 3)
     device = "gpu"
-    data_dir = ""
     model_dir = ""
     optical_flow= False
     model = finetuned_resnet(include_top=True, weights_dir=weights_dir)
