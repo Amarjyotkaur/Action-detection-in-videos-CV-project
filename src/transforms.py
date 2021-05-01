@@ -10,7 +10,7 @@ from torchvision.transforms._transforms_video import (
     RandomHorizontalFlipVideo,
 )
 
-import functional as F
+from . import functional as F
 
 class RandomSelectFrame(object):
     def __call__(self, clip):
