@@ -4,7 +4,7 @@ import os, cv2, random
 import shutil
 import scipy.misc
 import time
-from .OF_utils import optical_flow_prep
+from pre_processing.optical_flow_prep import optical_flow_prep
 
 
 #creates list of train and test directories
@@ -83,12 +83,12 @@ def process_clip(src_dir, dst_dir, seq_len, img_size, mean=None, normalization=T
     cap.release()
 
 
-def preprocessing(list_dir, UCF_dir, dest_dir, seq_len, img_size, overwrite=False, normalization=True,
+def preprocessing(list_dir, smtsmt_dir, dest_dir, seq_len, img_size, overwrite=False, normalization=True,
                   mean_subtraction=True, horizontal_flip=True, random_crop=True, consistent=True, continuous_seq=False):
     '''
     Extract video data to sequence of fixed length, and save it in npy file
     :param list_dir:
-    :param UCF_dir:
+    :param smtsmt_dir:
     :param dest_dir:
     :param seq_len:
     :param img_size:
@@ -113,18 +113,18 @@ def preprocessing(list_dir, UCF_dir, dest_dir, seq_len, img_size, overwrite=Fals
     os.mkdir(train_dir)
     os.mkdir(test_dir)
     if mean_subtraction:
-        mean = calc_mean(UCF_dir, img_size).astype(dtype='float16')
+        mean = calc_mean(smtsmt_dir, img_size).astype(dtype='float16')
         np.save(os.path.join(dest_dir, 'mean.npy'), mean)
     else:
         mean = None
 
-    print('Preprocessing UCF data ...')
+    print('Preprocessin something something data ...')
     for clip_list, sub_dir in [(trainlist, train_dir), (testlist, test_dir)]:
         for clip in clip_list:
             clip_name = os.path.basename(clip)
             clip_category = os.path.dirname(clip)
             category_dir = os.path.join(sub_dir, clip_category)
-            src_dir = os.path.join(UCF_dir, clip)
+            src_dir = os.path.join(smtsmt_dir, clip)
             dst_dir = os.path.join(category_dir, clip_name)
             # print(dst_dir)
             if not os.path.exists(category_dir):
@@ -134,10 +134,10 @@ def preprocessing(list_dir, UCF_dir, dest_dir, seq_len, img_size, overwrite=Fals
     print('Preprocessing done ...')
 
 
-def calc_mean(UCF_dir, img_size):
+def calc_mean(smtsmt_dir, img_size):
     frames = []
     print('Calculating RGB mean ...')
-    for dirpath, dirnames, filenames in os.walk(UCF_dir):
+    for dirpath, dirnames, filenames in os.walk(smtsmt_dir):
         for filename in filenames:
             path = os.path.join(dirpath, filename)
             if os.path.exists(path):
@@ -187,7 +187,7 @@ def preprocess_flow_image(flow_dir):
                 os.remove(flow_image_dir)
 
 
-def regenerate_data(data_dir, list_dir, UCF_dir):
+def regenerate_data(data_dir, list_dir, smtsmt_dir):
     '''
     calls data and times the preprocessing function above
     '''
@@ -195,14 +195,14 @@ def regenerate_data(data_dir, list_dir, UCF_dir):
     sequence_length = 10
     image_size = (216, 216, 3)
 
-    dest_dir = os.path.join(data_dir, 'UCF-Preprocessed-OF')
+    dest_dir = os.path.join(data_dir, 'smtsmt-Preprocessed-OF')
     # generate sequence for optical flow
-    preprocessing(list_dir, UCF_dir, dest_dir, sequence_length, image_size, overwrite=True, normalization=False,
+    preprocessing(list_dir, smtsmt_dir, dest_dir, sequence_length, image_size, overwrite=True, normalization=False,
                   mean_subtraction=False, horizontal_flip=False, random_crop=True, consistent=True, continuous_seq=True)
 
     # compute optical flow data
-    src_dir = '/home/changan/ActionRecognition/data/UCF-Preprocessed-OF'
-    dest_dir = '/home/changan/ActionRecognition/data/OF_data'
+    src_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/smtsmt-Preprocessed-OF'
+    dest_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/OF_data'
     optical_flow_prep(src_dir, dest_dir, mean_sub=True, overwrite=True)
 
     elapsed_time = time.time() - start_time
@@ -216,9 +216,9 @@ if __name__ == '__main__':
     sequence_length = 10
     image_size = (216, 216, 3)
 
-    data_dir = '/home/changan/ActionRecognition/data' 
-    list_dir = os.path.join(data_dir, 'ucfTrainTestlist')
-    UCF_dir = os.path.join(data_dir, 'UCF-101')
-    frames_dir = os.path.join(data_dir, 'frames/mean.npy')
+    data_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/' 
+    list_dir = os.path.join(data_dir, 'TrainTestlist')
+    smtsmt_dir = os.path.join(data_dir, 'smtsmt')
+    #frames_dir = os.path.join(data_dir, 'frames/mean.npy')
 
-    regenerate_data(data_dir, list_dir, UCF_dir)
+    regenerate_data(data_dir, list_dir, smtsmt_dir)

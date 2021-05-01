@@ -82,10 +82,10 @@ def train(model, train_data, test_data, epochs, steps_per_epoch, test_steps, wei
 
 
 if __name__ == '__main__':
-    data_dir = '/home/changan/ActionRecognition_rnn/data'
+    data_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/'
     list_dir = os.path.join(data_dir, 'ucfTrainTestlist')
     video_dir = os.path.join(data_dir, 'CNN_Predicted')
-    weights_dir = '/home/changan/ActionRecognition_rnn/models'
+    weights_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/models'
 
     rnn_weights_dir = os.path.join(weights_dir, 'rnn.h5')
     RNN_model = RNN.RNN(rnn_weights_dir, CNN_output)
