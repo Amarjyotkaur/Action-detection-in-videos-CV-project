@@ -3,6 +3,7 @@ from UCF_utils import image_from_sequence_generator, sequence_generator, get_dat
 from models.finetuned_resnet import finetuned_resnet
 from models.temporal_cnn import temporal_CNN
 import time 
+import tensorflow as tf
 from torch import nn
 from torch import optim
 from UCF_preprocessing import regenerate_data
@@ -45,6 +46,7 @@ def train(model, n_epoch, learningrate, train_data, test_data, input_shape, devi
 
             #Forward Propagate and obtain Prediction
             optimizer.zero_grad()
+            tf.convert_to_tensor(images)
             output = model.forward(images)
             pred = torch.flatten(torch.round(output)).int()
 

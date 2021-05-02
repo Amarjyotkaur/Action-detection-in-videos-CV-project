@@ -34,6 +34,7 @@ def sequence_generator(data_list, batch_size, input_shape, num_classes):
             count = 0
             while not os.path.exists(clip_dir):
                 count += 1
+                print(clip_dir)
                 if count > 20:
                     raise FileExistsError('Too many file missing')
                 index = (index + 1) % len(data_list)
