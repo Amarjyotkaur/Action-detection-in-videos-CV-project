@@ -44,7 +44,7 @@ def select_random_trim(clip, num_frames): # L x H x W x C -> # OL x H x W x C
         raise ValueError(f'The given clip has insufficient frames ({clip_len}/{num_frames})')
     elif clip_len == num_frames:
         return clip
-    start = random.randrange(clip.shape[0] - num_frames)
+    start = random.randrange(clip_len - num_frames)
     end = start + num_frames
     return clip[start:end]
 
