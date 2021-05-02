@@ -40,6 +40,8 @@ def sequence_generator(data_list, batch_size, input_shape, num_classes):
                 clip_dir, class_idx = data_list[index]
             clip_data = np.load(clip_dir)
             if clip_data.shape != batch_x.shape[1:]:
+                print(clip_data.shape)
+                print(batch_x.shape[1:])
                 raise ValueError('The number of time sequence is inconsistent with the video data')
             batch_x[i] = clip_data
         yield batch_x, batch_y
@@ -246,21 +248,25 @@ def get_data_list(list_dir, video_dir):
     class_dir = os.path.join(list_dir, 'classInd.txt')
     with open(class_dir) as fo:
         for line in fo:
-            class_number, class_name = line.split()
+            class_number, class_name = line.split(" ",1)
             class_number = int(class_number)
             class_index[class_name] = class_number
 
     train_data = []
     for i, clip in enumerate(trainlist):
-        clip_class = os.path.dirname(clip)
+        clip_path = clip.split("\\")
+        clip_class = int(clip_path[-2])
+        #clip_class = os.path.dirname(clip)
         dst_dir = os.path.join(train_dir, clip)
-        train_data.append((dst_dir, class_index[clip_class]))
+        train_data.append((dst_dir, clip_class))
 
     test_data = []
     for i, clip in enumerate(testlist):
-        clip_class = os.path.dirname(clip)
+        clip_path = clip.split("\\")
+        clip_class = int(clip_path[-2])
+        #clip_class = os.path.dirname(clip)
         dst_dir = os.path.join(test_dir, clip)
-        test_data.append((dst_dir, class_index[clip_class]))
+        test_data.append((dst_dir, clip_class))
 
     return train_data, test_data, class_index
 
@@ -268,14 +274,14 @@ def get_data_list(list_dir, video_dir):
 if __name__ == '__main__':
     image_size = (216, 216, 3)
 
-    data_dir = '/home/changan/ActionRecognition/data'
-    list_dir = os.path.join(data_dir, 'ucfTrainTestlist')
+    data_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data'
+    list_dir = os.path.join(data_dir, 'TrainTestlist')
 
     test_list = os.path.join(list_dir, 'testlist.txt')
-    frames_dir = '/home/changan/ActionRecognition/data/UCF-Preprocessed-OF/test'
-    flow_dir = '/home/changan/ActionRecognition/data/OF_data/test'
+    frames_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data\smtsmt-Preprocessed-OF\test'
+    flow_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data\OF_data\test'
     BatchSize = 32
-    N_CLASSES = 101
+    N_CLASSES = 174
     generator = two_stream18_generator(test_list, frames_dir, flow_dir, BatchSize,
                                        (216, 216, 3), (216, 216, 18), N_CLASSES)
 

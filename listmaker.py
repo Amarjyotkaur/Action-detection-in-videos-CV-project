@@ -10,12 +10,13 @@ def make_list(root_dir, dsname):
         for file in files:
             name, ext = os.path.splitext(file)
             if ext == '.webm':
-                path = os.path.join(root_dir, file)
+                category = os.path.basename(root)
+                path = os.path.join(root_dir, dsname, category, file)
                 path_list.append(path + '\n')
     
     file_path = os.path.join(root_dir, f'{dsname}list.txt')
     with open(file_path, 'w') as f:
         f.writelines(path_list)
 
-make_list('D:\SUTD/Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data', 'train')
-make_list('D:\SUTD/Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data', 'test')
+make_list('D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data', 'train')
+make_list('D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data', 'test')

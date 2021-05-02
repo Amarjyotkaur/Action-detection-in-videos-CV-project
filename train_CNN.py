@@ -24,7 +24,7 @@ def train(model, n_epoch, learningrate, train_data, test_data, input_shape, devi
     optimizer = optim.SGD(model.parameters(), lr=learningrate, weight_decay=1e-6, momentum=0.9, nesterov=True)
 
     #Connect to GPU
-    model.to(device)
+    #model.to(device)
     #start = time.time()
     
     #Instanciate Parameters
@@ -40,7 +40,7 @@ def train(model, n_epoch, learningrate, train_data, test_data, input_shape, devi
     for e in range(epochs):
         model.train()
         for images, labels in trainloader:
-            images, labels = images.to(device), labels.to(device)
+            #images, labels = images.to(device), labels.to(device)
             steps += 1
 
             #Forward Propagate and obtain Prediction
@@ -93,28 +93,28 @@ if __name__ == '__main__':
     #extract frames from videos as npy files
     sequence_length = 10
     image_size = (216, 216, 3)
-    data_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/' 
+    data_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data' 
     list_dir = os.path.join(data_dir, 'TrainTestlist')
     smtsmt_dir = os.path.join(data_dir, 'smtsmt')
     #frames_dir = os.path.join(data_dir, 'frames/mean.npy')
 
-    regenerate_data(data_dir, list_dir, smtsmt_dir)
+    #regenerate_data(data_dir, list_dir, smtsmt_dir)
 
     #Train CNN
-    data_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data'
+    data_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data'
     list_dir = os.path.join(data_dir, 'TrainTestList')
-    weights_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/models/weights'
+    weights_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\models\weights'
     video_dir = os.path.join(data_dir, 'smtsmt-Preprocessed-OF')
     n_epoch = 1000
     lr = 0.001
     input_shape = (10, 216, 216, 3)
-    device = "gpu"
-    model_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/models'
+    device = "cuda"
+    model_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\models'
     optical_flow= False
 
     train_data, test_data, class_index = get_data_list(list_dir, video_dir)
     
-    model = finetuned_resnet(include_top=True, weights_dir=weights_dir)
+    model = finetuned_resnet(174, include_top=True)
     model = train(model, n_epoch, lr, train_data, test_data, input_shape, device, data_dir, model_dir, optical_flow)
 
     # train CNN using optical flow as input

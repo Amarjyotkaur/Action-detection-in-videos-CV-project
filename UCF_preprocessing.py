@@ -4,6 +4,7 @@ import os, cv2, random
 import shutil
 import scipy.misc
 import time
+from PIL import Image
 from pre_processing.optical_flow_prep import optical_flow_prep
 
 
@@ -29,7 +30,13 @@ def combine_list_txt(list_dir):
 
 def process_frame(frame, img_size, x, y, mean=None, normalization=True):
 
-    frame = scipy.misc.imresize(frame, img_size)
+    
+    framearr = np.asarray(frame)
+    frame = np.array(Image.fromarray(framearr).resize(img_size))
+    #x = random.randrange(frame.shape[0] - img_size[0])
+    #y = random.randrange(frame.shape[1] - img_size[1])
+    #frame = frame[x:x + img_size[0], y:y + img_size[1], :]
+    #frame= scipy.misc.imresize(frame, img_size) DEPRECATED
     frame = frame.astype(dtype='float16')
     if mean is not None:
         frame -= mean
@@ -65,6 +72,10 @@ def process_clip(src_dir, dst_dir, seq_len, img_size, mean=None, normalization=T
         frame_sequence = []
         # select random first frame index for continuous sequence
         if continuous_seq:
+            print(clip_length)
+            print(seq_len)
+            print(clip_length-seq_len)
+            print(src_dir)
             start_index = random.randrange(clip_length-seq_len)
         x, y = None, None
         xy_set = False
@@ -74,6 +85,7 @@ def process_clip(src_dir, dst_dir, seq_len, img_size, mean=None, normalization=T
             else:
                 index = i*step_size + random.randrange(step_size)
             frame = all_frames[index]
+            print(type(frame))
             frame = process_frame(frame, img_size, x, y, mean=mean, normalization=normalization)
             frame_sequence.append(frame)
         frame_sequence = np.stack(frame_sequence, axis=0)
@@ -117,8 +129,8 @@ def preprocessing(list_dir, smtsmt_dir, dest_dir, seq_len, img_size, overwrite=F
         np.save(os.path.join(dest_dir, 'mean.npy'), mean)
     else:
         mean = None
-
-    print('Preprocessin something something data ...')
+    
+    print('Preprocessing something something data ...')
     for clip_list, sub_dir in [(trainlist, train_dir), (testlist, test_dir)]:
         for clip in clip_list:
             clip_name = os.path.basename(clip)
@@ -129,8 +141,7 @@ def preprocessing(list_dir, smtsmt_dir, dest_dir, seq_len, img_size, overwrite=F
             # print(dst_dir)
             if not os.path.exists(category_dir):
                 os.mkdir(category_dir)
-            process_clip(src_dir, dst_dir, seq_len, img_size, mean=mean, normalization=normalization, horizontal_flip=horizontal_flip,
-                         random_crop=random_crop, consistent=consistent, continuous_seq=continuous_seq)
+            process_clip(src_dir, dst_dir, seq_len, img_size, mean=mean, normalization=normalization, consistent=consistent, continuous_seq=continuous_seq)
     print('Preprocessing done ...')
 
 
@@ -193,7 +204,7 @@ def regenerate_data(data_dir, list_dir, smtsmt_dir):
     '''
     start_time = time.time()
     sequence_length = 10
-    image_size = (216, 216, 3)
+    image_size = (216, 216)
 
     dest_dir = os.path.join(data_dir, 'smtsmt-Preprocessed-OF')
     # generate sequence for optical flow
@@ -201,8 +212,8 @@ def regenerate_data(data_dir, list_dir, smtsmt_dir):
                   mean_subtraction=False, horizontal_flip=False, random_crop=True, consistent=True, continuous_seq=True)
 
     # compute optical flow data
-    src_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/smtsmt-Preprocessed-OF'
-    dest_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/OF_data'
+    src_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data\smtsmt-Preprocessed-OF'
+    dest_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data\OF_data'
     optical_flow_prep(src_dir, dest_dir, mean_sub=True, overwrite=True)
 
     elapsed_time = time.time() - start_time
@@ -216,7 +227,7 @@ if __name__ == '__main__':
     sequence_length = 10
     image_size = (216, 216, 3)
 
-    data_dir = 'D:/SUTD/Term-7/Deep_Learning/BigProject/Action_Detection_In_Videos/data/' 
+    data_dir = 'D:\SUTD\Term-7\Deep_Learning\BigProject\Action_Detection_In_Videos\data'
     list_dir = os.path.join(data_dir, 'TrainTestlist')
     smtsmt_dir = os.path.join(data_dir, 'smtsmt')
     #frames_dir = os.path.join(data_dir, 'frames/mean.npy')
