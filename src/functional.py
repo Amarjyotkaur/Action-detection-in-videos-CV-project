@@ -39,6 +39,7 @@ def select_random_frames(clip, num_frames): # L x H x W x C -> # OL x H x W x C
     return np.stack(frames, axis=0)
 
 def select_random_trim(clip, num_frames): # L x H x W x C -> # OL x H x W x C
+    clip_len = clip.shape[0]
     if clip_len < num_frames:
         raise ValueError(f'The given clip has insufficient frames ({clip_len}/{num_frames})')
     elif clip_len == num_frames:
