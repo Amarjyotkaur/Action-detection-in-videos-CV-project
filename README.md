@@ -10,9 +10,11 @@ We will use 20bn-somethingsomething video dataset found here: https://20bn.com/d
 
 2. models - contains the architecture of models used in our project, which are finetuned-resnet.py and temporal_cnn.py
 
-3. pre-processing - contains the preprocessing files required to prepare our data for training and testing
+3. src - contains miscellaneous functions which used throughout our project
 
-4. src - contains miscellaneous functions which used throughout our project 
+4. preprocess_data.ipynb - Preprocess data in dataset folder for training the models (Dataset is already updated)
+
+5. train_models.ipynb - Trains the Fine-tuned ResNet model and the simple CNN model. 
 
 ## Model Architecture
 
