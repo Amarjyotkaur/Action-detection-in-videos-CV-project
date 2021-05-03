@@ -6,13 +6,21 @@ We will use 20bn-somethingsomething video dataset found here: https://20bn.com/d
 
 ## File Structure
 
+1. datasets - contains the full dataset downloaded from the TwentyBN website located in ssv2, another smaller subset of the dataset has been extracted into ssv2-mini which is used to train our models
+
+2. models - contains the architecture of models used in our project, which are finetuned-resnet.py and temporal_cnn.py
+
+3. pre-processing - contains the preprocessing files required to prepare our data for training and testing
+
+4. src - contains miscellaneous functions which used throughout our project 
+
 ## Model Architecture
 
-We used a two stream model to learn to classify using the spatial and temporal aspect of each video by averaging their scoes.
+We used a two stream model to learn to classify using the spatial and temporal aspect of each video by averaging their scores.
 
-- For the spatial aspect of the video, which describes the objects within the video, we will be using a Fine-tuned ResNet model named finetuned_resnet.py, which takes in a single frame and outputs the probabilities of each label.
+- The spatial aspect of the video describes the objects that would help us to classify the action shown. We will be using a Fine-tuned ResNet model named finetuned_resnet.py, which takes in a single frame and outputs the probabilities of each label.
 
-- For the temporal aspect of the video, which describes the optical flow/movements within a video, we will be using a Simple CNN named temporal_cnn.py, which takes in a sequence of optical flow information derived from 10 frames of each video and outputs the probabilities of each label.
+- The temporal aspect of the video captures the optical flow/movements within a video which also helps to classify the action shown. We will be using a Simple CNN named temporal_cnn.py, which takes in a sequence of optical flow information derived from 10 frames of each video and outputs the probabilities of each label.
 
 ## Citations
 ```
