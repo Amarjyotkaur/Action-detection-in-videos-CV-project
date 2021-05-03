@@ -9,7 +9,7 @@ def read_clip(clip_path):
     frames = []
     cap = cv2.VideoCapture(clip_path)
     while cap.isOpened():
-        ret, frame = cap.read()
+        ret, frame = cap.read() # frame is H x W x C
         if not ret:
             break
         if frame.any():

@@ -55,10 +55,11 @@ class CustomDataset(Dataset):
     def _get_sample(self, path):
         raise NotImplementedError
     
-    def _get_label(self, cls_idx):
-        label = torch.zeros(self._num_samples)
-        label[cls_idx] = 1.
-        return label
+    def _get_label(self, cls_idx): # Convert to one-hot vector
+        return cls_idx
+        # label = torch.zeros(self._num_samples)
+        # label[cls_idx] = 1.
+        # return label
     
     def __len__(self):
         return self._num_samples
@@ -88,7 +89,7 @@ class SSV2_ProcessedDataset(CustomDataset):
     """Something Something V2 Processed Dataset"""
     
     def __init__(self, root, subdir, dstype):
-        super.__init__(root, subdir, dstype, 'npy')
+        super().__init__(root, subdir, dstype, 'npy')
     
     def _get_sample(self, path):
         return torch.from_numpy(np.load(path))
