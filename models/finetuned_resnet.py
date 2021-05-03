@@ -3,7 +3,7 @@ import torch.nn as nn
 import torchvision.models as models
 import os
 
-def finetuned_resnet(num_classes, weights_dir=None, include_top=False):
+def finetuned_resnet(num_classes, include_top=False):
     # Load pretrained ResNet50 model
     model = models.resnet50(pretrained=True)
     
@@ -26,9 +26,5 @@ def finetuned_resnet(num_classes, weights_dir=None, include_top=False):
         fc_layers.append(nn.Softmax(dim=1))
     
     model.fc = nn.Sequential(*fc_layers)
-    
-    # Load weights
-    if weights_dir is not None and os.path.exists(weights_dir):
-        model.load_state_dict(torch.load(weights_dir))
     
     return model

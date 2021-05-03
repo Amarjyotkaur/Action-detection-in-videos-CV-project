@@ -55,7 +55,9 @@ class temporal_CNN(nn.Module):
             layers.append(nn.Dropout(dropout))
         return nn.Sequential(*layers)
     
-    def forward(self, x): 
+    def forward(self, x):
+        if len(x.shape) == 5: # B x C X L x H x W
+            x = x.view(x.shape[0], -1, *x.shape[3:]) # B x C*L x H x W
         x = self.conv_layers(x)
         x = x.flatten(1)
         x = self.fc_layers(x)
